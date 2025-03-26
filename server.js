@@ -1,4 +1,5 @@
 import express from "express";
+import errorHandler from "./middleware/errorHandler.js";
 
 const port = process.env.PORT || 8000;
 
@@ -16,5 +17,6 @@ app.use("/", authRouter);
 // app.use("/files", filesRouter);
 
 // Error
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server is running on port: ${port}`));
