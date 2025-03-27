@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import errorHandler from "./middleware/errorHandler.js";
+import folderRoutes from "./routes/folderRoutes.js";
 
 const port = process.env.PORT || 8000;
 
@@ -11,7 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 // Public
-app.use("/", authRouter);
+// app.use("/api", authRouter);
+app.use("/api/folders", folderRoutes);
 
 // Protected
 // app.use("/files", filesRouter);
