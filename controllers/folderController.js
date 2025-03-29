@@ -74,6 +74,20 @@ export const folderPut = asyncHandler(async (req, res, next) => {
 });
 
 export const folderDelete = asyncHandler(async (req, res, next) => {
-  // check if any assests in folder (use the get resources by asset folder method.)
-  // if yes then (use the update method with the asset_folder parameter to change the asset's asset folder.)
+  // const folderId = req.params.id;
+  // look up database
+  // return from database filepath
+  const filePath = "uploads/testFolder/";
+  const result = await cloudinary.api.delete_folder(`${filePath}`);
+  console.log(result);
+  if (!result) {
+    throw new CustomError("Could not update folder", 500);
+  }
+  // if successfully deleted from cloudinary
+  //  delete from database
+  res.status(200).json({
+    success: true,
+    message: "Folder deleted successfully",
+    // folder: result,
+  });
 });
