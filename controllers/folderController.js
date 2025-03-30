@@ -22,10 +22,10 @@ export const folderGet = asyncHandler(async (req, res, next) => {
 export const folderPost = asyncHandler(async (req, res, next) => {
   const { folderName } = req.body;
 
-  const result = await cloudinary.api.create_folder(`uploads/${folderName}`);
-  //   const result = await cloudinary.uploader.create_folder(
-  //     `uploads/${folderName}`
-  //   );
+  const result = await cloudinary.api.create_folder(
+    `uploads/${folderName.toLowerCase()}`
+  );
+
   console.log(result);
   if (!result) {
     throw new CustomError("Could not create folder", 500);
