@@ -15,6 +15,7 @@ export const createFolder = async (newFolder) => {
       folderName: name,
       folderPath: path,
       externalId: external_id,
+      userId: 
     },
   });
   return folder;
