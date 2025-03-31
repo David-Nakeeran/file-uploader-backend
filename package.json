@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server",
-    "dev": "node --watch server"
+    "dev": "node --env-file=.env --watch server"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.2",
     "pg": "^8.14.1",
-    "prisma": "^6.5.0"
+    "prisma": "^6.5.0",
+    "resend": "^4.2.0"
   }
 }
