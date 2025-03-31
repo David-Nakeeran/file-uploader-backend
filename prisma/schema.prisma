@@ -18,6 +18,8 @@ model User {
   fullName String
   email String @unique
   password String
+  isVerified Boolean @default(false)
+  emailVerificationToken String?
   folders Folder[]
   files File[]
 }
