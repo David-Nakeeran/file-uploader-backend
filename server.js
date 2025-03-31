@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 // Public
-app.use("/api/register", authRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/folders", folderRoutes);
 
 // Protected
