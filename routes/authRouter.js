@@ -7,7 +7,9 @@ const router = express.Router();
 
 // Routes
 // Post login user
-// router.post("/login", loginPost);
+router.get("/login", (req, res, next) => {
+  res.send("Login Page");
+});
 
 // Post Register new user
 router.post(
@@ -18,6 +20,10 @@ router.post(
   registerPost
 );
 
-router.post("/verify-email", verifyEmail);
+router.get("/verify-email", verifyEmail);
+
+router.get("/verification-expired", (req, res, next) => {
+  res.send("Request new verification");
+});
 
 export default router;
