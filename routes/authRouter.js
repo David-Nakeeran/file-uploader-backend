@@ -1,7 +1,11 @@
 import express from "express";
 import { validateEmail, validatePassword } from "../middleware/validators.js";
 import handleValidationErrors from "../middleware/handleValidationErrors.js";
-import { registerPost, verifyEmail } from "../controllers/authController.js";
+import {
+  registerPost,
+  verifyEmail,
+  requestNewVerificationEmail,
+} from "../controllers/authController.js";
 
 const router = express.Router();
 
@@ -22,8 +26,6 @@ router.post(
 
 router.get("/verify-email", verifyEmail);
 
-router.get("/verification-expired", (req, res, next) => {
-  res.send("Request new verification");
-});
+router.post("/verification-expired", requestNewVerificationEmail);
 
 export default router;
