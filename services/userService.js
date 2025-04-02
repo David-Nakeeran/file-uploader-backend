@@ -1,5 +1,5 @@
-import CustomError from "../errors/customError.js";
-import { PrismaClient, Prisma } from "@prisma/client";
+import DatabaseError from "../errors/databaseError.js";
+import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { generateEmailVerificationToken } from "../auth/emailAuth.js";
 import { sendVerificationEmail } from "../services/mailService.js";
@@ -35,11 +35,8 @@ export const createUser = async (newUser, password) => {
 
     return user;
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      if (err.code === "P2002") {
-        throw new CustomError(400, "Email is already in use");
-      }
-    }
+    console.log(err);
+    throw new DatabaseError(err);
   }
 };
 
@@ -56,13 +53,12 @@ export const updateUserVerified = async (userId) => {
     });
     return userVerified;
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(err);
-    }
+    throw new DatabaseError(err);
   }
 };
 
 export const getUserById = async (userId) => {
+  // Add try catch
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -72,10 +68,18 @@ export const getUserById = async (userId) => {
 };
 
 export const getUserByEmail = async ({ email }) => {
+  // Add try catch
   const user = await prisma.user.findUnique({
     where: {
       email: email,
     },
   });
   return user;
+};
+
+export const isUserVerified = async () => {
+  try {
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
 };
