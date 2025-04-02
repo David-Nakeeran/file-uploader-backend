@@ -4,6 +4,7 @@ import {
   createUser,
   updateUserVerified,
   getUserById,
+  getUserByEmail,
 } from "../services/userService.js";
 import bcrypt from "bcryptjs";
 import { verifyEmailVerificationToken } from "../auth/emailAuth.js";
@@ -59,5 +60,9 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
 });
 
 export const requestNewVerificationEmail = asyncHandler(
-  async (req, res, next) => {}
+  async (req, res, next) => {
+    const user = await getUserByEmail(req.body);
+
+    // check if user has been verified already
+  }
 );
