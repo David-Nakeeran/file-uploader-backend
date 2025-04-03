@@ -7,6 +7,7 @@ import {
   requestNewVerificationEmail,
   emailVerificationExpired,
   verifyEmailSuccess,
+  checkIfVerified,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -27,9 +28,17 @@ router.post(
 );
 
 // Email Auth
-router.get("/verify-email", verifyEmail);
+router.get("/verify-email", checkIfVerified, verifyEmail);
 router.get("/verify-success", verifyEmailSuccess);
+
+/* 
+Request new verification email button, fetch new verification email
+*/
 router.get("/verification-expired", emailVerificationExpired);
+
+/*
+Form email input submit button
+*/
 router.post("/request-new-verification-email", requestNewVerificationEmail);
 
 export default router;
