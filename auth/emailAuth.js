@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const generateEmailVerificationToken = (userId) => {
+  // Wrapped userId in an object
   const payload = { userId };
   return jwt.sign(payload, process.env.EMAIL_SECRET, { expiresIn: "5m" });
 };
