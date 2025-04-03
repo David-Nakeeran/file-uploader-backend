@@ -19,3 +19,15 @@ export const verifyEmailVerificationToken = (token) => {
     throw error;
   }
 };
+
+export const decodeJWTWithoutVerification = (token) => {
+  try {
+    const decode = jwt.decode(token);
+    if (!decode) {
+      throw new CustomError(400, "Invalid or missing token");
+    }
+    return decode;
+  } catch (err) {
+    throw new CustomError(400, "Failed to decode");
+  }
+};
