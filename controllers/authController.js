@@ -5,9 +5,15 @@ import {
   updateUserVerified,
   getUserById,
   getUserByEmail,
+  setUserEmailTokenToNull,
+  setUserEmailToken,
 } from "../services/userService.js";
 import bcrypt from "bcryptjs";
-import { verifyEmailVerificationToken } from "../auth/emailAuth.js";
+import {
+  generateEmailVerificationToken,
+  verifyEmailVerificationToken,
+} from "../auth/emailAuth.js";
+import { sendVerificationEmail } from "../services/mailService.js";
 
 export const registerPost = asyncHandler(async (req, res, next) => {
   //check if user exists
@@ -56,7 +62,13 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
     throw new CustomError(500, "Internal server error");
   }
 
-  res.status(302).redirect("api/auth/login?verified=true");
+  res.status(302).redirect("/verify-success?verified=true");
+});
+
+export const emailVerificationExpired = asyncHandler(async (req, res, next) => {
+  res.json({
+    message: "Your verification link has expired. Please request a new one",
+  });
 });
 
 export const requestNewVerificationEmail = asyncHandler(
@@ -64,5 +76,40 @@ export const requestNewVerificationEmail = asyncHandler(
     const user = await getUserByEmail(req.body);
 
     // check if user has been verified already
+    if (user.isVerified) {
+      return res
+        .status(200)
+        .json({ success: true, message: "User already verified" });
+    }
+
+    // check if user has emailVerificationToken, if so, delete
+    const updatedUser = user.emailVerificationToken
+      ? await setUserEmailTokenToNull(user)
+      : user;
+
+    const verificationToken = generateEmailVerificationToken(updatedUser.id);
+
+    const hashedToken = await bcrypt.hash(verificationToken, 10);
+
+    await setUserEmailToken(updatedUser, hashedToken);
+
+    await sendVerificationEmail(updatedUser.email, verificationToken);
+
+    res
+      .status(200)
+      .json({ success: true, message: "New verification email sent to user" });
   }
 );
+
+export const verifyEmailSuccess = asyncHandler(async (req, res, next) => {
+  const { verified } = req.query;
+
+  if (verified === "true") {
+    return res.status(200).json({
+      success: true,
+      message: "Your email has been successfully verified",
+    });
+  }
+
+  throw new CustomError(400, "Verification failed");
+});
