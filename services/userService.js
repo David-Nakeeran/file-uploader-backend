@@ -59,26 +59,57 @@ export const updateUserVerified = async (userId) => {
 
 export const getUserById = async (userId) => {
   // Add try catch
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  return user;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    return user;
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
 };
 
 export const getUserByEmail = async ({ email }) => {
-  // Add try catch
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
-  return user;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    return user;
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
 };
 
-export const isUserVerified = async () => {
+export const setUserEmailTokenToNull = async ({ id }) => {
   try {
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        emailVerificationToken: null,
+      },
+    });
+    return user;
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
+};
+
+export const setUserEmailToken = async ({ id }, hashedToken) => {
+  try {
+    await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        emailVerificationToken: hashedToken,
+      },
+    });
   } catch (err) {
     throw new DatabaseError(err);
   }
