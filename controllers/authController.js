@@ -12,6 +12,7 @@ import bcrypt from "bcryptjs";
 import {
   generateEmailVerificationToken,
   verifyEmailVerificationToken,
+  decodeJWTWithoutVerification,
 } from "../auth/emailAuth.js";
 import { sendVerificationEmail } from "../services/mailService.js";
 
@@ -35,20 +36,26 @@ export const registerPost = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: "User registered successfully" });
 });
 
-export const verifyEmail = asyncHandler(async (req, res, next) => {
+export const checkIfVerified = asyncHandler(async (req, res, next) => {
   const { token } = req.query;
 
-  if (!token) {
-    throw new CustomError(400, "Invalid or missing token");
+  const { userId } = decodeJWTWithoutVerification(token);
+
+  const user = await getUserById(userId);
+
+  if (user.isVerified) {
+    res.status(302).redirect("/api/auth/verify-success?verified=true");
+  } else {
+    next();
   }
+});
+
+export const verifyEmail = asyncHandler(async (req, res, next) => {
+  const { token } = req.query;
 
   const { userId } = verifyEmailVerificationToken(token);
 
   const user = await getUserById(userId);
-
-  if (!user.emailVerificationToken) {
-    throw new CustomError(400, "This email has already been verified");
-  }
 
   const isTokenValid = await bcrypt.compare(token, user.emailVerificationToken);
 
@@ -62,7 +69,7 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
     throw new CustomError(500, "Internal server error");
   }
 
-  res.status(302).redirect("/verify-success?verified=true");
+  res.status(302).redirect("/api/auth/verify-success?verified=true");
 });
 
 export const emailVerificationExpired = asyncHandler(async (req, res, next) => {
