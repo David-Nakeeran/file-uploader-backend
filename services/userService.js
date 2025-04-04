@@ -58,13 +58,17 @@ export const updateUserVerified = async (userId) => {
 };
 
 export const getUserById = async (userId) => {
-  // Add try catch
   try {
     const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
+    if (!user) {
+      const error = new Error("User not found");
+      err.code = "P2025";
+      throw new DatabaseError(error);
+    }
     return user;
   } catch (err) {
     throw new DatabaseError(err);
@@ -108,6 +112,22 @@ export const setUserEmailToken = async ({ id }, hashedToken) => {
       },
       data: {
         emailVerificationToken: hashedToken,
+      },
+    });
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
+};
+
+export const deleteExpiredUser = async () => {
+  try {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24 Hours ago
+    await prisma.user.deleteMany({
+      where: {
+        isVerified: false,
+        createdAt: {
+          lt: oneDayAgo, // If createdAt less than oneDayAgo delete
+        },
       },
     });
   } catch (err) {
