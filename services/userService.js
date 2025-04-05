@@ -134,3 +134,15 @@ export const deleteExpiredUser = async () => {
     throw new DatabaseError(err);
   }
 };
+
+export const isPasswordValid = async (user, password) => {
+  try {
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return false;
+    }
+    return true;
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
+};
