@@ -15,6 +15,8 @@ import {
   decodeJWTWithoutVerification,
 } from "../auth/emailAuth.js";
 import { sendVerificationEmail } from "../services/mailService.js";
+import passport from "../auth/passportConfig.js";
+import { generateToken } from "../auth/auth.js";
 
 export const registerPost = asyncHandler(async (req, res, next) => {
   //check if user exists
@@ -102,7 +104,7 @@ export const requestNewVerificationEmail = asyncHandler(
 
     await sendVerificationEmail(updatedUser.email, verificationToken);
 
-    res
+    return res
       .status(200)
       .json({ success: true, message: "New verification email sent to user" });
   }
@@ -119,4 +121,30 @@ export const verifyEmailSuccess = asyncHandler(async (req, res, next) => {
   }
 
   throw new CustomError(400, "Verification failed");
+});
+
+export const loginPost = asyncHandler(async (req, res, next) => {
+  passport.authenticate("login", async (err, user, info) => {
+    try {
+      if (err || !user) {
+        throw new CustomError(400, "An error occurred");
+      }
+      const token = generateToken(user);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        // secure: true // Set to true for HTTPS connections only
+        sameSite: "Strict",
+        maxAge: 5 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Logged in successfully",
+        // token: token,
+      });
+    } catch (error) {
+      next(error);
+    }
+  })(req, res, next);
 });
