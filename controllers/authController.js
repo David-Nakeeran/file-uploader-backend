@@ -123,12 +123,14 @@ export const verifyEmailSuccess = asyncHandler(async (req, res, next) => {
   throw new CustomError(400, "Verification failed");
 });
 
-export const loginPost = asyncHandler(async (req, res, next) => {
+export const loginPost = (req, res, next) => {
   passport.authenticate("login", async (err, user, info) => {
     try {
+      console.log("Are we here");
       if (err || !user) {
-        throw new CustomError(400, "An error occurred");
+        throw new CustomError(400, info?.message || "An error occurred");
       }
+
       const token = generateToken(user);
 
       res.cookie("token", token, {
@@ -147,4 +149,4 @@ export const loginPost = asyncHandler(async (req, res, next) => {
       next(error);
     }
   })(req, res, next);
-});
+};
