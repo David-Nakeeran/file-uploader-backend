@@ -5,10 +5,14 @@ import errorHandler from "./middleware/errorHandler.js";
 import folderRoutes from "./routes/folderRoutes.js";
 import authRouter from "./routes/authRouter.js";
 import { deleteExpiredUser } from "./services/userService.js";
+import passport from "./auth/passportConfig.js";
 
 const port = process.env.PORT || 8000;
 
 const app = express();
+
+// Initialize passport
+app.use(passport.initialize());
 
 await deleteExpiredUser();
 console.log("Cleanup: Expired unverified users removed");
