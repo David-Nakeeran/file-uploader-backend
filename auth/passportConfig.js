@@ -1,9 +1,9 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { getUserByEmail, isPasswordValid } from "../services/userService.js";
-import CustomError from "../errors/customError.js";
 
 passport.use(
+  "login",
   new LocalStrategy(
     {
       usernameField: "email",
@@ -11,16 +11,18 @@ passport.use(
     },
     async (email, password, done) => {
       try {
+        console.log("before email");
         const user = await getUserByEmail({ email });
+        console.log("problem?");
 
         if (!user) {
-          throw new CustomError(404, "User not found");
+          return done(null, false, { message: "User not found" });
         }
 
         const validate = await isPasswordValid(user, password);
 
         if (!validate) {
-          throw new CustomError(400, "Wrong password");
+          return done(null, false, { message: "Wrong password" });
         }
 
         return done(null, user, { message: "Logged in Successfully" });
