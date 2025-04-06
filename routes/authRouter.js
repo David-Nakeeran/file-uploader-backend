@@ -9,8 +9,9 @@ import {
   verifyEmailSuccess,
   checkIfVerified,
   loginPost,
+  refreshTokenController,
 } from "../controllers/authController.js";
-import { authenticateToken } from "../auth/auth.js";
+import { authenticateToken, authenticateRefreshToken } from "../auth/auth.js";
 
 const router = express.Router();
 
@@ -22,17 +23,14 @@ router.get("/login", (req, res, next) => {
 
 router.post("/login", loginPost);
 
-router.get(
-  "/protected-route",
-  checkIfVerified,
-  authenticateToken,
-  (req, res) => {
-    res.status(200).json({
-      success: true,
-      message: "Access granted to protected route",
-    });
-  }
-);
+router.get("/protected-route", authenticateToken, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Access granted to protected route",
+  });
+});
+
+router.get("/refresh-token", authenticateRefreshToken, refreshTokenController);
 
 // Post Register new user
 router.post(
