@@ -7,6 +7,7 @@ import {
   getUserByEmail,
   setUserEmailTokenToNull,
   setUserEmailToken,
+  setUserRefreshToken,
 } from "../services/userService.js";
 import bcrypt from "bcryptjs";
 import {
@@ -17,6 +18,8 @@ import {
 import { sendVerificationEmail } from "../services/mailService.js";
 import passport from "../auth/passportConfig.js";
 import { generateToken } from "../auth/auth.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const registerPost = asyncHandler(async (req, res, next) => {
   //check if user exists
@@ -126,27 +129,61 @@ export const verifyEmailSuccess = asyncHandler(async (req, res, next) => {
 export const loginPost = (req, res, next) => {
   passport.authenticate("login", async (err, user, info) => {
     try {
-      console.log("Are we here");
       if (err || !user) {
         throw new CustomError(400, info?.message || "An error occurred");
       }
 
-      const token = generateToken(user);
+      const accessToken = generateToken(user, process.env.TOKEN_SECRET, "15m");
+      const refreshToken = generateToken(
+        user,
+        process.env.REFRESH_TOKEN_SECRET,
+        "24h"
+      );
 
-      res.cookie("token", token, {
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+      await setUserRefreshToken(user, hashedRefreshToken);
+
+      res.cookie("accessToken", accessToken, {
         httpOnly: true,
         // secure: true // Set to true for HTTPS connections only
         sameSite: "Strict",
-        maxAge: 5 * 60 * 1000,
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        // secure: true // Set to true for HTTPS connections only
+        sameSite: "Strict",
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
       });
 
       return res.status(200).json({
         success: true,
         message: "Logged in successfully",
-        // token: token,
       });
     } catch (error) {
       next(error);
     }
   })(req, res, next);
 };
+
+export const refreshTokenController = asyncHandler(async (req, res, next) => {
+  const refreshToken = req.cookies.refreshToken;
+  const user = await getUserById(req.user);
+
+  const match = await bcrypt.compare(refreshToken, user.refreshToken);
+  if (!match) {
+    throw new CustomError(401, "Refresh token does not match");
+  }
+
+  const newAccessToken = generateToken(user, process.env.TOKEN_SECRET, "15m");
+
+  res.cookie("accessToken", newAccessToken, {
+    httpOnly: true,
+    // secure: true // Set to true for HTTPS connections only
+    sameSite: "Strict",
+    maxAge: 15 * 60 * 1000, // 15 minutes
+  });
+
+  res.status(200).json({ success: true, message: "Access token refreshed" });
+});
