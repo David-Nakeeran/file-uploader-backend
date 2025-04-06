@@ -6,6 +6,7 @@ import folderRoutes from "./routes/folderRoutes.js";
 import authRouter from "./routes/authRouter.js";
 import { deleteExpiredUser } from "./services/userService.js";
 import passport from "./auth/passportConfig.js";
+import cookieParser from "cookie-parser";
 
 const port = process.env.PORT || 8000;
 
@@ -20,6 +21,8 @@ console.log("Cleanup: Expired unverified users removed");
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(cookieParser());
 
 // Routes
 // Public
