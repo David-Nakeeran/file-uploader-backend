@@ -21,6 +21,7 @@ model User {
   createdAt DateTime @default(now())
   isVerified Boolean @default(false)
   emailVerificationToken String?
+  refreshToken String?
   folders Folder[]
   files File[]
 }
