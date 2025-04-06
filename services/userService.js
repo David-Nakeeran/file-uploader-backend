@@ -146,3 +146,18 @@ export const isPasswordValid = async (user, password) => {
     throw new DatabaseError(err);
   }
 };
+
+export const setUserRefreshToken = async (user, refreshToken) => {
+  try {
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        refreshToken: refreshToken,
+      },
+    });
+  } catch (error) {
+    throw new DatabaseError(err);
+  }
+};
