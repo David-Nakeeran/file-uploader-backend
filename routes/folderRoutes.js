@@ -6,6 +6,7 @@ import {
   folderPut,
   folderDelete,
 } from "../controllers/folderController.js";
+import { authenticateToken } from "../auth/auth.js";
 
 const router = express.Router();
 
@@ -13,7 +14,10 @@ const router = express.Router();
 router.get("/", folderGet);
 // router.get("/:id", folderGetById);
 router.put("/:id", folderPut);
-router.post("/", folderPost);
+
+// Create folder
+router.post("/", authenticateToken, folderPost);
+
 router.delete("/", folderDelete);
 
 export default router;
