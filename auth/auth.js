@@ -3,11 +3,6 @@ import CustomError from "../errors/customError.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-// export const generateToken = (user, secret, expires) => {
-//   const payload = { userId: user.id };
-//   return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "5m" });
-// };
-
 export const generateToken = (user, secret, expires) => {
   const payload = { userId: user.id };
   return jwt.sign(payload, secret, { expiresIn: expires });
@@ -15,14 +10,13 @@ export const generateToken = (user, secret, expires) => {
 
 export const authenticateToken = (req, res, next) => {
   // Extract access token from the HttpOnly cookie
-  console.log(req.cookies);
-  const token = req.cookies.accessToken;
-
-  if (!token) {
-    throw new CustomError(401, "Access denied, no token provided");
-  }
-
   try {
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      throw new CustomError(401, "Access denied, no token provided");
+    }
+
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
     req.user = decoded.userId;
     next();
