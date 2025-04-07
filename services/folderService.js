@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import DatabaseError from "../errors/databaseError.js";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -8,17 +9,21 @@ export const allFolders = async () => {
   return folders;
 };
 
-export const createFolder = async (newFolder) => {
+export const createFolder = async (newFolder, userId) => {
   const { name, path, external_id } = newFolder;
-  const folder = await prisma.folder.create({
-    data: {
-      folderName: name,
-      folderPath: path,
-      externalId: external_id,
-      userId: 
-    },
-  });
-  return folder;
+  try {
+    const folder = await prisma.folder.create({
+      data: {
+        folderName: name,
+        folderPath: path,
+        externalId: external_id,
+        userId: userId,
+      },
+    });
+    return folder;
+  } catch (error) {
+    throw new DatabaseError(error);
+  }
 };
 
 // export const isFolderPathUnique = async (newPath) => {
