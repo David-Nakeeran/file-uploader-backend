@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import upload from "../middleware/multer.js";
 import cloudinary from "../utils/cloudinaryConfig.js";
+import { createFolder } from "../services/folderService.js";
 
 export const folderGet = asyncHandler(async (req, res, next) => {
   const subFolder = await cloudinary.api.sub_folders("uploads");
@@ -26,15 +27,16 @@ export const folderPost = asyncHandler(async (req, res, next) => {
     `uploads/${folderName.toLowerCase()}`
   );
 
-  console.log(result);
   if (!result) {
-    throw new CustomError("Could not create folder", 500);
+    throw new CustomError(500, "Could not create folder");
   }
+
+  const folder = await createFolder(result, req.user);
 
   res.status(201).json({
     success: true,
     message: "Folder created successfully",
-    folder: result,
+    folder: folder,
   });
 });
 
