@@ -161,3 +161,18 @@ export const setUserRefreshToken = async (user, refreshToken) => {
     throw new DatabaseError(err);
   }
 };
+
+export const setUserRefreshTokenToNull = async (userId) => {
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+  } catch (err) {
+    throw new DatabaseError(err);
+  }
+};
