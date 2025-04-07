@@ -8,6 +8,7 @@ import {
   setUserEmailTokenToNull,
   setUserEmailToken,
   setUserRefreshToken,
+  setUserRefreshTokenToNull,
 } from "../services/userService.js";
 import bcrypt from "bcryptjs";
 import {
@@ -185,5 +186,31 @@ export const refreshTokenController = asyncHandler(async (req, res, next) => {
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
-  res.status(200).json({ success: true, message: "Access token refreshed" });
+  return res
+    .status(200)
+    .json({ success: true, message: "Access token refreshed" });
+});
+
+export const logout = asyncHandler(async (req, res, next) => {
+  const userId = req.user;
+  if (!userId) {
+    throw new CustomError(401, "Logout failed");
+  }
+  await setUserRefreshTokenToNull(userId);
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    // secure: true // Set to true for HTTPS connections only
+    sameSite: "Strict",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    // secure: true // Set to true for HTTPS connections only
+    sameSite: "Strict",
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
 });
