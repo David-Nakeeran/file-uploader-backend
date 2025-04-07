@@ -10,6 +10,7 @@ import {
   checkIfVerified,
   loginPost,
   refreshTokenController,
+  logout,
 } from "../controllers/authController.js";
 import { authenticateToken, authenticateRefreshToken } from "../auth/auth.js";
 
@@ -21,7 +22,14 @@ router.get("/login", (req, res, next) => {
   res.send("Login Page");
 });
 
-router.post("/login", loginPost);
+router.post(
+  "/login",
+  validateEmail,
+  validatePassword,
+  handleValidationErrors,
+  loginPost
+);
+router.post("/logout", authenticateToken, logout);
 
 router.get("/protected-route", authenticateToken, (req, res) => {
   res.status(200).json({
