@@ -1,17 +1,18 @@
 import asyncHandler from "express-async-handler";
 import upload from "../middleware/multer.js";
 import cloudinary from "../utils/cloudinaryConfig.js";
-import { createFolder } from "../services/folderService.js";
+import { allFolders, createFolder } from "../services/folderService.js";
 
-export const folderGet = asyncHandler(async (req, res, next) => {
-  const subFolder = await cloudinary.api.sub_folders("uploads");
-  if (!subFolder) {
-    throw new CustomError("Could not retrieve all folders", 500);
+export const folderGetAll = asyncHandler(async (req, res, next) => {
+  const folders = await allFolders(req.user);
+
+  if (!folders) {
+    throw new CustomError(500, "Could not retrieve all folders");
   }
   res.status(200).json({
     success: true,
-    message: "Retrieved all sub folders",
-    folders: subFolder,
+    message: "Retrieved all folders",
+    folders,
   });
 });
 
