@@ -34,6 +34,21 @@ export const createFolder = async (newFolder, userId) => {
   }
 };
 
+export const getFolderByFilePath = async (path) => {
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: {
+        folderPath: path,
+      },
+    });
+    return folder;
+  } catch (error) {
+    throw new DatabaseError(error);
+  }
+  // Get folder by filepath
+  // Return folder
+};
+
 // export const isFolderPathUnique = async (newPath) => {
 // get all folder from db
 // check collection if it the new path does not exist
