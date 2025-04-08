@@ -4,9 +4,17 @@ import DatabaseError from "../errors/databaseError.js";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
-export const allFolders = async () => {
-  const folders = await prisma.folder.findMany();
-  return folders;
+export const allFolders = async (userId) => {
+  try {
+    const folders = await prisma.folder.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    return folders;
+  } catch (error) {
+    throw new DatabaseError(error);
+  }
 };
 
 export const createFolder = async (newFolder, userId) => {
