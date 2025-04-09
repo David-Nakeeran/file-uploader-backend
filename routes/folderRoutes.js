@@ -26,6 +26,6 @@ router.post(
   folderPost
 );
 
-router.delete("/", folderDelete);
+router.delete("/:id", authenticateToken, folderDelete);
 
 export default router;
