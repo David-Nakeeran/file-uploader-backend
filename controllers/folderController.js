@@ -4,7 +4,8 @@ import cloudinary from "../utils/cloudinaryConfig.js";
 import {
   allFolders,
   createFolder,
-  getFolderByFilePath,
+  deleteFolderById,
+  getFolderById,
 } from "../services/folderService.js";
 
 export const folderGetAll = asyncHandler(async (req, res, next) => {
@@ -18,16 +19,6 @@ export const folderGetAll = asyncHandler(async (req, res, next) => {
     message: "Retrieved all folders",
     folders,
   });
-});
-
-export const folderGetByParams = asyncHandler(async (req, res, next) => {
-  const folderPath = req.params.folderPath;
-
-  if (!folderPath) {
-    throw new CustomError(400, "Invalid folder path");
-  }
-
-  return await getFolderByFilePath(folderPath);
 });
 
 export const folderPost = asyncHandler(async (req, res, next) => {
@@ -86,20 +77,25 @@ export const folderPut = asyncHandler(async (req, res, next) => {
 });
 
 export const folderDelete = asyncHandler(async (req, res, next) => {
-  // const folderId = req.params.id;
+  const userId = req.params.id;
+
+  if (!userId) {
+    throw new CustomError(400, "Invalid id");
+  }
+  // const folder = await getFolderById();
   // look up database
   // return from database filepath
-  const filePath = "uploads/testFolder/";
-  const result = await cloudinary.api.delete_folder(`${filePath}`);
-  console.log(result);
-  if (!result) {
-    throw new CustomError("Could not update folder", 500);
-  }
+  // const filePath = "uploads/testFolder/";
+  // const result = await cloudinary.api.delete_folder(`${filePath}`);
+  // console.log(result);
+  // if (!result) {
+  //   throw new CustomError("Could not update folder", 500);
+  // }
   // if successfully deleted from cloudinary
   //  delete from database
-  res.status(200).json({
-    success: true,
-    message: "Folder deleted successfully",
-    // folder: result,
-  });
+  // res.status(200).json({
+  //   success: true,
+  //   message: "Folder deleted successfully",
+  //   // folder: result,
+  // });
 });
