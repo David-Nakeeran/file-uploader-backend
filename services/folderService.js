@@ -34,11 +34,11 @@ export const createFolder = async (newFolder, userId) => {
   }
 };
 
-export const getFolderByFilePath = async (path) => {
+export const getFolderById = async (userId) => {
   try {
     const folder = await prisma.folder.findUnique({
       where: {
-        folderPath: path,
+        id: path,
       },
     });
     return folder;
