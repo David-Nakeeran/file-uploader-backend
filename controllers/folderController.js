@@ -1,7 +1,11 @@
 import asyncHandler from "express-async-handler";
 import upload from "../middleware/multer.js";
 import cloudinary from "../utils/cloudinaryConfig.js";
-import { allFolders, createFolder } from "../services/folderService.js";
+import {
+  allFolders,
+  createFolder,
+  getFolderByFilePath,
+} from "../services/folderService.js";
 
 export const folderGetAll = asyncHandler(async (req, res, next) => {
   const folders = await allFolders(req.user);
@@ -16,10 +20,15 @@ export const folderGetAll = asyncHandler(async (req, res, next) => {
   });
 });
 
-// export const folderGetById = asyncHandler(async (req, res, next) => {
-//   const folderId = req.params.id;
-// get data from database, like the file path
-// });
+export const folderGetByParams = asyncHandler(async (req, res, next) => {
+  const folderPath = req.params.folderPath;
+
+  if (!folderPath) {
+    throw new CustomError(400, "Invalid folder path");
+  }
+
+  return await getFolderByFilePath(folderPath);
+});
 
 export const folderPost = asyncHandler(async (req, res, next) => {
   const { folderName } = req.body;
