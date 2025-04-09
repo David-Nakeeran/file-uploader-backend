@@ -45,8 +45,6 @@ export const getFolderByFilePath = async (path) => {
   } catch (error) {
     throw new DatabaseError(error);
   }
-  // Get folder by filepath
-  // Return folder
 };
 
 // export const isFolderPathUnique = async (newPath) => {
