@@ -34,11 +34,11 @@ export const createFolder = async (newFolder, userId) => {
   }
 };
 
-export const getFolderById = async (userId) => {
+export const getFolderById = async (folderId) => {
   try {
     const folder = await prisma.folder.findUnique({
       where: {
-        id: path,
+        id: folderId,
       },
     });
     return folder;
@@ -47,7 +47,15 @@ export const getFolderById = async (userId) => {
   }
 };
 
-// export const isFolderPathUnique = async (newPath) => {
-// get all folder from db
-// check collection if it the new path does not exist
-// };
+export const deleteFolderById = async (folderId) => {
+  try {
+    const deleteFolder = await prisma.folder.delete({
+      where: {
+        id: folderId,
+      },
+    });
+    return deleteFolder;
+  } catch (error) {
+    throw new DatabaseError(error);
+  }
+};
