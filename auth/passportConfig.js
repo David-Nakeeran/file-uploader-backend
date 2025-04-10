@@ -11,9 +11,7 @@ passport.use(
     },
     async (email, password, done) => {
       try {
-        console.log("before email");
         const user = await getUserByEmail({ email });
-        console.log("problem?");
 
         if (!user) {
           return done(null, false, { message: "User not found" });
