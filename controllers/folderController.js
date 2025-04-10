@@ -77,25 +77,23 @@ export const folderPut = asyncHandler(async (req, res, next) => {
 });
 
 export const folderDelete = asyncHandler(async (req, res, next) => {
-  const userId = req.params.id;
+  const folderId = parseInt(req.params.id);
 
-  if (!userId) {
-    throw new CustomError(400, "Invalid id");
+  if (!folderId) {
+    throw new CustomError(400, "Invalid folder id");
   }
-  // const folder = await getFolderById();
-  // look up database
-  // return from database filepath
-  // const filePath = "uploads/testFolder/";
-  // const result = await cloudinary.api.delete_folder(`${filePath}`);
-  // console.log(result);
-  // if (!result) {
-  //   throw new CustomError("Could not update folder", 500);
-  // }
-  // if successfully deleted from cloudinary
-  //  delete from database
-  // res.status(200).json({
-  //   success: true,
-  //   message: "Folder deleted successfully",
-  //   // folder: result,
-  // });
+
+  const folder = await getFolderById(folderId);
+
+  const result = await cloudinary.api.delete_folder(`${folder.folderPath}`);
+
+  if (!result) {
+    throw new CustomError("Could not delete folder", 500);
+  }
+
+  await deleteFolderById(folder.id);
+  res.status(200).json({
+    success: true,
+    message: "Folder deleted successfully",
+  });
 });
