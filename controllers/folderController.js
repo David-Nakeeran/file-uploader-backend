@@ -6,6 +6,7 @@ import {
   createFolder,
   deleteFolderById,
   getFolderById,
+  updateFolderById,
 } from "../services/folderService.js";
 
 export const folderGetAll = asyncHandler(async (req, res, next) => {
@@ -42,37 +43,48 @@ export const folderPost = asyncHandler(async (req, res, next) => {
 });
 
 export const folderPut = asyncHandler(async (req, res, next) => {
-  // const folderId = req.params.id;
+  const folderId = parseInt(req.params.id);
   const { newFolderName } = req.body;
+
   // look up database to get correct record
+  const folder = await getFolderById(folderId);
+
   // store file path as old filenamepath variable
-  const currentFolderPath = "uploads/test2";
+  const currentFolderPath = folder.folderPath;
 
   const indexToCut = currentFolderPath.lastIndexOf("/");
   let folderPathToBeAddedTo = currentFolderPath.slice(0, indexToCut);
 
-  folderPathToBeAddedTo += `/${newFolderName}`;
+  folderPathToBeAddedTo += `/${newFolderName.toLowerCase()}`;
 
   // before updated cloudinary with new folder now
   // use service function to check it doesn't have a sibling folder with the same name
-
-  // update database folder name with newFolderName
+  console.log(
+    await cloudinary.api.rename_folder(
+      `${currentFolderPath}`,
+      `${folderPathToBeAddedTo}`
+    )
+  );
   const result = await cloudinary.api.rename_folder(
     `${currentFolderPath}`,
     `${folderPathToBeAddedTo}`
   );
 
-  console.log(result);
   if (!result) {
-    throw new CustomError("Could not update folder", 500);
+    throw new CustomError(500, "Could not update folder");
   }
 
   // update database record
+  const updatedFolder = await updateFolderById(
+    folderId,
+    newFolderName,
+    folderPathToBeAddedTo
+  );
 
   res.status(200).json({
     success: true,
     message: "Folder updated successfully",
-    folder: result,
+    folder: updatedFolder,
   });
 });
 
