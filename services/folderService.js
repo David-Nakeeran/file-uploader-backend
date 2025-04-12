@@ -59,3 +59,22 @@ export const deleteFolderById = async (folderId) => {
     throw new DatabaseError(error);
   }
 };
+
+export const updateFolderById = async (folderId, folderName, folderPath) => {
+  try {
+    const updatedFolder = await prisma.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        folderName,
+        folderPath,
+      },
+    });
+    return updatedFolder;
+  } catch (error) {
+    throw new DatabaseError(error);
+  }
+};
+
+export const isFolderNameDuplicate = async () => {};
