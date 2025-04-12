@@ -1,7 +1,6 @@
 import express from "express";
 import {
   folderGetAll,
-  // folderGetById,
   folderPost,
   folderPut,
   folderDelete,
@@ -25,6 +24,8 @@ router.post(
   handleValidationErrors,
   folderPost
 );
+
+router.put("/:id", authenticateToken, folderPut);
 
 router.delete("/:id", authenticateToken, folderDelete);
 
