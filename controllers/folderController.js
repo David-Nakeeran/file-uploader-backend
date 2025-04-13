@@ -8,6 +8,7 @@ import {
   getFolderById,
   updateFolderById,
 } from "../services/folderService.js";
+import { cloudinaryUpdateFolderName } from "../services/cloudinaryService.js";
 
 export const folderGetAll = asyncHandler(async (req, res, next) => {
   const folders = await allFolders(req.user);
@@ -57,22 +58,10 @@ export const folderPut = asyncHandler(async (req, res, next) => {
 
   folderPathToBeAddedTo += `/${newFolderName.toLowerCase()}`;
 
-  // before updated cloudinary with new folder now
-  // use service function to check it doesn't have a sibling folder with the same name
-  console.log(
-    await cloudinary.api.rename_folder(
-      `${currentFolderPath}`,
-      `${folderPathToBeAddedTo}`
-    )
+  const result = await cloudinaryUpdateFolderName(
+    currentFolderPath,
+    folderPathToBeAddedTo
   );
-  const result = await cloudinary.api.rename_folder(
-    `${currentFolderPath}`,
-    `${folderPathToBeAddedTo}`
-  );
-
-  if (!result) {
-    throw new CustomError(500, "Could not update folder");
-  }
 
   // update database record
   const updatedFolder = await updateFolderById(
