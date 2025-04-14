@@ -8,7 +8,11 @@ import {
   getFolderById,
   updateFolderById,
 } from "../services/folderService.js";
-import { cloudinaryUpdateFolderName } from "../services/cloudinaryService.js";
+import {
+  cloudinaryUpdateFolderName,
+  cloudinaryDeleteFolder,
+} from "../services/cloudinaryService.js";
+import CustomError from "../errors/customError.js";
 
 export const folderGetAll = asyncHandler(async (req, res, next) => {
   const folders = await allFolders(req.user);
@@ -86,13 +90,9 @@ export const folderDelete = asyncHandler(async (req, res, next) => {
 
   const folder = await getFolderById(folderId);
 
-  const result = await cloudinary.api.delete_folder(`${folder.folderPath}`);
+  await cloudinaryDeleteFolder(`${folder.folderPath}`);
 
-  if (!result) {
-    throw new CustomError("Could not delete folder", 500);
-  }
-
-  await deleteFolderById(folder.id);
+  await deleteFolderById(folder.id); // Chore: Check error handling
   res.status(200).json({
     success: true,
     message: "Folder deleted successfully",
