@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import DatabaseError from "../errors/databaseError.js";
+import CustomError from "../errors/customError.js";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -41,8 +42,14 @@ export const getFolderById = async (folderId) => {
         id: folderId,
       },
     });
+    if (!folder) {
+      throw new CustomError(404, "Folder does not exist");
+    }
     return folder;
   } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(error);
   }
 };
