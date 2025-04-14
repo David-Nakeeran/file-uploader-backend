@@ -16,3 +16,12 @@ export const cloudinaryUpdateFolderName = async (
     throw new CloudinaryError(409, "A folder with that name already exists");
   }
 };
+
+export const cloudinaryDeleteFolder = async (folderPath) => {
+  try {
+    return await cloudinary.api.delete_folder(folderPath);
+  } catch (error) {
+    console.log(`Message: ${Object.keys(error)}`);
+    console.log(error.error);
+  }
+};
