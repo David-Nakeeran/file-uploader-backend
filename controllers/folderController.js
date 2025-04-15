@@ -11,6 +11,7 @@ import {
 import {
   cloudinaryUpdateFolderName,
   cloudinaryDeleteFolder,
+  cloudinaryCreateFolder,
 } from "../services/cloudinaryService.js";
 import CustomError from "../errors/customError.js";
 
@@ -29,10 +30,9 @@ export const folderGetAll = asyncHandler(async (req, res, next) => {
 
 export const folderPost = asyncHandler(async (req, res, next) => {
   const { folderName } = req.body;
+  const path = `uploads${req.user}/${folderName.toLowerCase()}`;
 
-  const result = await cloudinary.api.create_folder(
-    `uploads/${folderName.toLowerCase()}`
-  );
+  const result = await cloudinaryCreateFolder(path);
 
   if (!result) {
     throw new CustomError(500, "Could not create folder");
