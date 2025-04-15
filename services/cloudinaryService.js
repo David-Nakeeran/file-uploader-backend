@@ -1,6 +1,15 @@
 import cloudinary from "../utils/cloudinaryConfig.js";
 import CloudinaryError from "../errors/cloudinaryError.js";
 
+export const cloudinaryCreateFolder = async (path) => {
+  try {
+    return await cloudinary.api.create_folder(path);
+  } catch (error) {
+    console.log(`Message: ${Object.keys(error)}`);
+    console.log(error.error);
+  }
+};
+
 export const cloudinaryUpdateFolderName = async (
   currentFolderPath,
   folderName
@@ -23,5 +32,6 @@ export const cloudinaryDeleteFolder = async (folderPath) => {
   } catch (error) {
     console.log(`Message: ${Object.keys(error)}`);
     console.log(error.error);
+    // Chore: find out error
   }
 };
