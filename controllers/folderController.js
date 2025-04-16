@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
-import upload from "../middleware/multer.js";
-import cloudinary from "../utils/cloudinaryConfig.js";
+import { upload } from "../middleware/multer.js";
 import {
   allFolders,
   createFolder,
