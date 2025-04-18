@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import { upload } from "../middleware/multer.js";
 import {
   allFolders,
   createFolder,
