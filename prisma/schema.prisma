@@ -38,10 +38,12 @@ model Folder {
 
 model File {
   id  Int @id @default(autoincrement())
+  fileName String
   filePath String @unique
   assetId String @unique
   resourceType String
-  format String
+  format String?
+  url String
   user User @relation(fields: [userId], references: [id])
   userId Int
   folder Folder @relation(fields: [folderId], references: [id])
