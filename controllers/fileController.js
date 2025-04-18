@@ -1,9 +1,11 @@
 import asyncHandler from "express-async-handler";
 import { getFolderById } from "../services/folderService.js";
 import { streamUpload } from "../services/cloudinaryService.js";
+import { createFile, getFileById } from "../services/fileService.js";
 
 export const fileUpload = asyncHandler(async (req, res, next) => {
   const folderId = parseInt(req.body.id);
+  const userId = req.user;
   const file = req.file;
   const fileName = req.file.originalname.substring(
     0,
@@ -18,25 +20,24 @@ export const fileUpload = asyncHandler(async (req, res, next) => {
   }
 
   const result = await streamUpload(file.buffer, folder.folderPath, publicId);
-  // cloudinary.uploader
-  //   .upload_stream(
-  //     { resource_type: "auto", folder: folder.folderPath, public_id: publicId },
-  //     (error, result) => {
-  //       console.log(result);
-  //       if (error) {
-  //         return res
-  //           .status(500)
-  //           .json({ message: "Error uploading file", error });
-  //       }
-  //       res.status(200).json({
-  //         success: true,
-  //         file: result, // Cloudinary response with file info
-  //       });
-  //     }
-  //   )
-  //   .end(file.buffer);
+
+  const fileUpload = await createFile(userId, folderId, result);
   return res.status(200).json({
     success: true,
-    result,
+    fileUpload,
   });
+});
+
+export const fileMove = asyncHandler(async (req, res, next) => {
+  const fileId = parseInt(req.params.id);
+  const file = getFileById(fileId);
+  // get file filePath
+  // get file fileName
+
+  // get folder by id
+  // get folder path
+
+  // append fileName to folderPath - `uploads1/newfolder/fileName`
+
+  // cloudinary.api.uploader.rename(oldfilePath, newfilepath)
 });
