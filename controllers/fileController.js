@@ -48,8 +48,7 @@ export const fileMove = asyncHandler(async (req, res, next) => {
   // get folder path
   const newFilePath = `${folder.folderPath}/${fileName}`;
 
-  console.log(oldPath);
-  console.log(newFilePath);
+  // Move into cloudinaryService
   const result = await cloudinary.uploader.rename(
     `${oldPath}`,
     `${newFilePath}`,
