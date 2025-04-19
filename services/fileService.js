@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import DatabaseError from "../errors/databaseError.js";
+import CustomError from "../errors/customError.js";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -52,8 +53,29 @@ export const getFileById = async (fileId) => {
   }
 };
 
-// Move file to another folder
-// https://cloudinary.com/documentation/image_upload_api_reference#rename
+export const updateFile = async (fileId, filePath, url, folderId) => {
+  try {
+    const updatedFile = await prisma.file.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        filePath,
+        url,
+        folderId,
+      },
+    });
+    if (!updatedFile) {
+      throw new CustomError(404, "File does not exist");
+    }
+    return updatedFile;
+  } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new DatabaseError(error);
+  }
+};
 
 // Delete file
 // https://cloudinary.com/documentation/admin_api#delete_resources_by_asset_id
