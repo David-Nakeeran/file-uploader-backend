@@ -8,6 +8,7 @@ const router = express.Router();
 // Routes
 router.post("/", authenticateToken, upload.single("file"), fileUpload);
 
+// Move file route
 router.post("/:id", authenticateToken, fileMove);
 
 export default router;
