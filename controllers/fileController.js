@@ -80,7 +80,9 @@ export const fileDelete = asyncHandler(async (req, res, next) => {
 
   // get file asset id pass to cloudinary api
 
-  const result = await cloudinary.uploader.destroy(file.filePath);
+  const result = await cloudinary.uploader.destroy(file.filePath, {
+    resource_type: file.resourceType,
+  });
 
   return res.status(200).json({
     success: true,
