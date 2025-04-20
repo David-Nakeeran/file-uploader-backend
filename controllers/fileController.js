@@ -71,3 +71,20 @@ export const fileMove = asyncHandler(async (req, res, next) => {
     fileMoved,
   });
 });
+
+export const fileDelete = asyncHandler(async (req, res, next) => {
+  const fileId = parseInt(req.params.id);
+
+  // get file by id
+  const file = await getFileById(fileId);
+
+  // get file asset id pass to cloudinary api
+
+  const result = await cloudinary.uploader.destroy(file.filePath);
+
+  return res.status(200).json({
+    success: true,
+    message: "File deleted successfully",
+    result,
+  });
+});
