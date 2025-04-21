@@ -86,8 +86,3 @@ export const updateFolderById = async (folderId, folderName, folderPath) => {
     throw new DatabaseError(error);
   }
 };
-
-// GET all files by folder
-export const getAllFilesByFolder = async (folderId) => {
-  return await getFolderById(folderId);
-};
