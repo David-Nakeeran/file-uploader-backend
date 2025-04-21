@@ -41,6 +41,9 @@ export const getFolderById = async (folderId) => {
       where: {
         id: folderId,
       },
+      include: {
+        files: true,
+      },
     });
     if (!folder) {
       throw new CustomError(404, "Folder does not exist");
@@ -84,4 +87,7 @@ export const updateFolderById = async (folderId, folderName, folderPath) => {
   }
 };
 
-export const isFolderNameDuplicate = async () => {};
+// GET all files by folder
+export const getAllFilesByFolder = async (folderId) => {
+  return await getFolderById(folderId);
+};
