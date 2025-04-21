@@ -76,6 +76,3 @@ export const updateFile = async (fileId, filePath, url, folderId) => {
     throw new DatabaseError(error);
   }
 };
-
-// GET all files by folder
-// https://cloudinary.com/documentation/admin_api#get_resources_by_asset_folder
