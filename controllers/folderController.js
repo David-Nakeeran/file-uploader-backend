@@ -96,3 +96,14 @@ export const folderDelete = asyncHandler(async (req, res, next) => {
     message: "Folder deleted successfully",
   });
 });
+
+export const folderGetFiles = asyncHandler(async (req, res, next) => {
+  const folderId = parseInt(req.params.id);
+
+  const folder = await getFolderById(folderId);
+
+  return res.status(200).json({
+    success: true,
+    files: folder.files,
+  });
+});
