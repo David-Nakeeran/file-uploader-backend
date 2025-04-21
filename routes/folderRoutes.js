@@ -4,6 +4,7 @@ import {
   folderPost,
   folderPut,
   folderDelete,
+  folderGetFiles,
 } from "../controllers/folderController.js";
 import { authenticateToken } from "../auth/auth.js";
 import { validateFolderName } from "../middleware/validators.js";
@@ -13,7 +14,11 @@ const router = express.Router();
 
 // Routes
 router.get("/", authenticateToken, folderGetAll);
-// router.get("/:id", folderGetById);
+
+// Get all files from folder
+router.get("/:id", authenticateToken, folderGetFiles);
+
+// Update folder
 router.put("/:id", folderPut);
 
 // Create folder
