@@ -11,8 +11,6 @@ import { authenticateToken } from "../auth/auth.js";
 const router = express.Router();
 
 // Routes
-// Get all files from folder
-router.get("/:id", authenticateToken, getFiles);
 // Upload file
 router.post("/", authenticateToken, upload.single("file"), fileUpload);
 
