@@ -8,21 +8,21 @@
 
 ## Auth System (JWT & Refresh Tokens)
 
-- [ ] Check access token & refresh token works as expected
-- [ ] Ensure refresh tokens are cleared properly on logout
+- [x] Check access token & refresh token works as expected
+- [x] Ensure refresh tokens are cleared properly on logout
 
 ## Folder Management
 
-- [ ] Test CRUD operations
-- [ ] Edge cases: duplicate folder names, invalid IDs
-- [ ] Confirm folders are tied correctly to users
+- [x] Test CRUD operations
+- [x] Edge cases: duplicate folder names, invalid IDs
+- [x] Confirm folders are tied correctly to users
 
 ## File Management
 
-- [ ] Check ppload works and file paths are correct
-- [ ] Moving files updates folder ID and paths
-- [ ] Deleting a file removes it from storage and DB
-- [ ] Test with multiple users
+- [x] Check upload works and file paths are correct
+- [x] Moving files updates folder ID and paths
+- [x] Deleting a file removes it from storage and DB
+- [x] Test with multiple users
 
 ## Error Handling
 
