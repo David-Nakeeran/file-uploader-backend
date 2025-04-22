@@ -29,7 +29,7 @@ router.post(
   handleValidationErrors,
   loginPost
 );
-router.post("/logout", authenticateToken, logout);
+router.post("/logout", logout);
 
 router.get("/protected-route", authenticateToken, (req, res) => {
   res.status(200).json({
