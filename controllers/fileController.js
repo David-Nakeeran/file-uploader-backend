@@ -9,7 +9,7 @@ import {
 import cloudinary from "../utils/cloudinaryConfig.js";
 
 export const fileUpload = asyncHandler(async (req, res, next) => {
-  const folderId = parseInt(req.body.id);
+  const folderId = parseInt(req.params.id);
   const userId = req.user;
   const file = req.file;
   const fileName = req.file.originalname.substring(
