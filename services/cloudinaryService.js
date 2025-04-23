@@ -7,6 +7,7 @@ export const cloudinaryCreateFolder = async (path) => {
   } catch (error) {
     console.log(`Message: ${Object.keys(error)}`);
     console.log(error.error);
+    return reject(new CloudinaryError(500, error.message));
   }
 };
 
@@ -32,7 +33,7 @@ export const cloudinaryDeleteFolder = async (folderPath) => {
   } catch (error) {
     console.log(`Message: ${Object.keys(error)}`);
     console.log(error.error);
-    // Chore: find out error
+    return reject(new CloudinaryError(500, error.message));
   }
 };
 
@@ -46,7 +47,9 @@ export const streamUpload = (fileBuffer, folder, publicId) => {
       },
       (error, result) => {
         if (error) {
-          return reject(error);
+          console.log(`Message: ${Object.keys(error)}`);
+          console.log(error.error);
+          return reject(new CloudinaryError(500, error.message));
         }
         resolve(result);
       }
