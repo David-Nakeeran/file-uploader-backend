@@ -12,6 +12,9 @@ export const allFolders = async (userId) => {
         userId: userId,
       },
     });
+    if (!folders) {
+      throw new CustomError(404, "Folders does not exist");
+    }
     return folders;
   } catch (error) {
     throw new DatabaseError(error);
@@ -64,6 +67,9 @@ export const deleteFolderById = async (folderId) => {
         id: folderId,
       },
     });
+    if (!deleteFolder) {
+      throw new CustomError(404, "Folder does not exist");
+    }
     return deleteFolder;
   } catch (error) {
     throw new DatabaseError(error);
@@ -81,6 +87,9 @@ export const updateFolderById = async (folderId, folderName, folderPath) => {
         folderPath,
       },
     });
+    if (!updatedFolder) {
+      throw new CustomError(404, "Folder does not exist");
+    }
     return updatedFolder;
   } catch (error) {
     throw new DatabaseError(error);
