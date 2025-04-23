@@ -51,8 +51,14 @@ export const updateUserVerified = async (userId) => {
         emailVerificationToken: null,
       },
     });
+    if (!userVerified) {
+      throw new CustomError(404, "User does not exist");
+    }
     return userVerified;
   } catch (err) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(err);
   }
 };
@@ -65,12 +71,13 @@ export const getUserById = async (userId) => {
       },
     });
     if (!user) {
-      const error = new Error("User not found");
-      err.code = "P2025";
-      throw new DatabaseError(error);
+      throw new CustomError(404, "User does not exist");
     }
     return user;
   } catch (err) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(err);
   }
 };
@@ -82,8 +89,14 @@ export const getUserByEmail = async ({ email }) => {
         email: email,
       },
     });
+    if (!user) {
+      throw new CustomError(404, "User does not exist");
+    }
     return user;
   } catch (err) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(err);
   }
 };
@@ -98,8 +111,14 @@ export const setUserEmailTokenToNull = async ({ id }) => {
         emailVerificationToken: null,
       },
     });
+    if (!user) {
+      throw new CustomError(404, "User does not exist");
+    }
     return user;
   } catch (err) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(err);
   }
 };
