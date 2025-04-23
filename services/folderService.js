@@ -17,6 +17,9 @@ export const allFolders = async (userId) => {
     }
     return folders;
   } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(error);
   }
 };
@@ -72,6 +75,9 @@ export const deleteFolderById = async (folderId) => {
     }
     return deleteFolder;
   } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(error);
   }
 };
@@ -92,6 +98,9 @@ export const updateFolderById = async (folderId, folderName, folderPath) => {
     }
     return updatedFolder;
   } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new DatabaseError(error);
   }
 };
