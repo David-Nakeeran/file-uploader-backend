@@ -23,11 +23,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const registerPost = asyncHandler(async (req, res, next) => {
-  //check if user exists
-
-  // if user exists throw custom error 400
-
-  //has password before saving
+  //hash password before saving
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   //save user in database
