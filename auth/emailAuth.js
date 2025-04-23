@@ -27,7 +27,10 @@ export const decodeJWTWithoutVerification = (token) => {
       throw new CustomError(400, "Invalid or missing token");
     }
     return decode;
-  } catch (err) {
+  } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new CustomError(400, "Failed to decode");
   }
 };
