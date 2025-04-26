@@ -5,6 +5,7 @@
 - [ ] Remove unused imports and console logs
 - [ ] Add comments where needed
 - [ ] Consistent naming
+- [ ] Add middleware to route, check if param id matches folder owns the user owns, for updating and deleting
 
 ## Auth System (JWT & Refresh Tokens)
 
